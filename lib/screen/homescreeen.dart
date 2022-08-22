@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fecthjocks/helpers/jocks_api_helper.dart';
 import 'package:fecthjocks/model/jocks_modal.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-  List<Joks> jokesList = [];
-
+  List jokesList = [];
 
   jocksdata() async {
     await JockData.joksData.fetchWorldData();
@@ -22,9 +22,23 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    initsetdata();
   }
 
-  List<String> alldata = [];
+  initsetdata() async {
+    final prefs = await SharedPreferences.getInstance();
+    var getData = prefs.getString("jokesString");
+
+    if (getData != null) {
+      var datas = jsonDecode(getData);
+
+      jokesList.clear();
+      jokesList = datas;
+      print(jokesList);
+    }
+  }
+
+
   String date = "";
 
   @override
@@ -47,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemBuilder: (context, position) {
                               Joks joks = Joks();
 
-                              joks = jokesList[position];
+                              var jokes = jokesList[position];
 
                               return Card(
                                 child: Padding(
@@ -61,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           color: Colors.black),
                                       children: <TextSpan>[
                                         TextSpan(
-                                            text: "${joks.value},\n",
+                                            text: "${jokes["value"]},\n",
                                             style: const TextStyle(
                                                 fontSize: 13,
                                                 color: Colors.grey,
@@ -74,7 +88,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                               color: Colors.black),
                                         ),
                                         TextSpan(
-                                            text: joks.createddate,
+                                            text:
+                                                "${jokes["created_at"]!.split(" ")[0]}\n",
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.normal)),
+                                        const TextSpan(
+                                          text: "Time: ",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        ),
+                                        TextSpan(
+                                            text:
+                                                "${jokes["created_at"]!.split(" ")[1].toString().split(".")[0]}",
                                             style: const TextStyle(
                                                 fontSize: 15,
                                                 color: Colors.grey,
@@ -87,12 +116,23 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                         ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                jokesList.clear();
+                                Navigator.pop(context);
+                              });
+                            },
+                            child: Text("clear"),
+                          ),
+                        ],
                       );
                     });
               },
               icon: const Icon(
-                Icons.add,
-                color: Colors.black,
+                Icons.assignment,
+                color: Colors.white,
               ),
             )
           ],
@@ -106,10 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               } else if (snapshot.hasData) {
                 Joks data = snapshot.data;
-
-                //alldata.add("${data.createddate!.split(" ")[1]}");
                 print("-------------------------------------------");
-                print(alldata);
+               
                 return SafeArea(
                   child: Center(
                     child: Padding(
@@ -143,7 +181,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(
-                                    text: "${data.createddate!.split(" ")[1]}",
+                                    text:
+                                        "${data.createddate!.split(" ")[1].toString().split(".")[0]}",
                                     style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.grey,
@@ -174,29 +213,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(
                             height: 50,
                           ),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                jocksdata();
-                              });
-                            },
-                            child: Container(
-                              height: 50,
-                              width: 130,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                  boxShadow: const [
-                                    BoxShadow(
-                                        color: Colors.black12,
-                                        blurRadius: 9,
-                                        offset: Offset(3.4, 2.4))
-                                  ]),
-                              child: const Center(
-                                child: Text("new jocks"),
-                              ),
-                            ),
-                          ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -209,14 +225,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                 jokesList.add(joke);
                               });
-                              setState(() {
+                              setState(() async {
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                var setdata = jsonEncode(jokesList);
 
+                                initsetdata();
+
+                                prefs.setString("jokesString", setdata);
                               });
-
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-
-                              //prefs.setStringList("jokesString",jokesList );
                             },
                             child: Container(
                               height: 50,
@@ -231,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         offset: Offset(3.4, 2.4))
                                   ]),
                               child: const Center(
-                                child: Text("Fetch My joks"),
+                                child: Text("Fetch My jocks"),
                               ),
                             ),
                           ),
@@ -248,5 +265,3 @@ class _HomeScreenState extends State<HomeScreen> {
             }));
   }
 }
-
-
