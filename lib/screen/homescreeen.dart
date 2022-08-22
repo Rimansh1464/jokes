@@ -12,16 +12,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  TextEditingController joksEditingController = TextEditingController();
-  TextEditingController timeEditingController = TextEditingController();
-
   List<Joks> jokesList = [];
 
-  var storedTimes;
 
-  covidcontry() async {
-    //CovidData.covidData.fetchWorldData(contry: dropdownvalue);
-     await JockData.joksData.fetchWorldData();
+  jocksdata() async {
+    await JockData.joksData.fetchWorldData();
   }
 
   @override
@@ -29,62 +24,78 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  List<String>alldata = [];
+  List<String> alldata = [];
   String date = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("joks data"), actions: [IconButton(onPressed: () {
-          showDialog(context: context, builder: (BuildContext context) {return AlertDialog(content:  Container(
-height: 500,width: 300,
-            child: ListView.builder(
-              itemCount: jokesList.length ,
-              itemBuilder: (context, position) {
-                Joks joks = Joks();
+          title: Text("joks data"),
+          actions: [
+            IconButton(
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Container(
+                          height: double.infinity,
+                          width: 400,
+                          child: ListView.builder(
+                            itemCount: jokesList.length,
+                            itemBuilder: (context, position) {
+                              Joks joks = Joks();
 
-                joks = jokesList[position];
+                              joks = jokesList[position];
 
-                return Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: RichText(
-                      text: TextSpan(
-                        text: 'Jocks: ',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: "${joks.value},\n",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal)),
-                          TextSpan(
-                              text: "date: ",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),),TextSpan(
-                              text: joks.createddate,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.normal)),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                              return Card(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(13.0),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: 'Jocks: ',
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: "${joks.value},\n",
+                                            style: const TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.normal)),
+                                        const TextSpan(
+                                          text: "date: ",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black),
+                                        ),
+                                        TextSpan(
+                                            text: joks.createddate,
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.normal)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    });
               },
-            ),
-          ),);});
-        },
-          icon: Icon(Icons.add, color: Colors.black,),)
-        ],
+              icon: const Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
+            )
+          ],
         ),
         body: FutureBuilder(
             future: JockData.joksData.fetchWorldData(),
@@ -109,14 +120,14 @@ height: 500,width: 300,
                           RichText(
                             text: TextSpan(
                               text: 'date: ',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(
                                     text: "${data.createddate!.split(" ")[0]}",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.grey,
                                         fontWeight: FontWeight.normal)),
@@ -126,35 +137,34 @@ height: 500,width: 300,
                           RichText(
                             text: TextSpan(
                               text: 'Time: ',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(
                                     text: "${data.createddate!.split(" ")[1]}",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.grey,
                                         fontWeight: FontWeight.normal)),
                               ],
                             ),
                           ),
-
                           const SizedBox(
                             height: 20,
                           ),
                           RichText(
                             text: TextSpan(
                               text: 'Jocks: ',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black),
                               children: <TextSpan>[
                                 TextSpan(
                                     text: "${data.value}",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 18,
                                         color: Colors.grey,
                                         fontWeight: FontWeight.normal)),
@@ -165,22 +175,14 @@ height: 500,width: 300,
                             height: 50,
                           ),
                           InkWell(
-                            onTap: ()  {
-                             setState(()  {
-                                covidcontry();
-                             });
-
-
-
+                            onTap: () {
+                              setState(() {
+                                jocksdata();
+                              });
                             },
                             child: Container(
                               height: 50,
                               width: 130,
-
-                              child: Center(
-
-                                child: Text("new jocks"),
-                              ),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: Colors.white,
@@ -190,33 +192,35 @@ height: 500,width: 300,
                                         blurRadius: 9,
                                         offset: Offset(3.4, 2.4))
                                   ]),
+                              child: const Center(
+                                child: Text("new jocks"),
+                              ),
                             ),
                           ),
-                          SizedBox(height: 20,),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           InkWell(
                             onTap: () async {
                               setState(() {
-
-
-                                Joks joke = Joks(createddate: data.createddate, value: data.value) ;
+                                Joks joke = Joks(
+                                    createddate: data.createddate,
+                                    value: data.value);
 
                                 jokesList.add(joke);
                               });
-                              setState((){});
+                              setState(() {
 
-                              final prefs = await SharedPreferences.getInstance();
+                              });
+
+                              final prefs =
+                                  await SharedPreferences.getInstance();
 
                               //prefs.setStringList("jokesString",jokesList );
-
                             },
                             child: Container(
                               height: 50,
                               width: 130,
-
-                              child: Center(
-
-                                child: Text("Fetch My Laugh"),
-                              ),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: Colors.white,
@@ -226,6 +230,9 @@ height: 500,width: 300,
                                         blurRadius: 9,
                                         offset: Offset(3.4, 2.4))
                                   ]),
+                              child: const Center(
+                                child: Text("Fetch My joks"),
+                              ),
                             ),
                           ),
                         ],
@@ -242,12 +249,4 @@ height: 500,width: 300,
   }
 }
 
-// _save() async {
-//   // final prefs = await SharedPreferences.getInstance();
-//   // final key = 'my_int_key';
-//   //
-//   // prefs.setString(key, "${date}");
-//   // print('saved $value');
-//
-// });
-// }
+
