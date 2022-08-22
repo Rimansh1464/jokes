@@ -6,7 +6,7 @@ class JockData {
 
   static final JockData joksData = JockData._();
 
-  Future<Joks?> fetchWorldData() async {
+  Future<Joks?> fetchJocksData() async {
     http.Response response = await http.get(
       Uri.parse("https://api.chucknorris.io/jokes/random"),
     );

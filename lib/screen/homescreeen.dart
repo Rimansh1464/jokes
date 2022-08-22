@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List jokesList = [];
 
   jocksdata() async {
-    await JockData.joksData.fetchWorldData();
+    await JockData.joksData.fetchJocksData();
   }
 
   @override
@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         body: FutureBuilder(
-            future: JockData.joksData.fetchWorldData(),
+            future: JockData.joksData.fetchJocksData(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError) {
                 return Center(
